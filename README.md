@@ -97,3 +97,7 @@ sigmake -nAnchorLang sigs/anchor-lang.pat sigs/anchor-lang.sig
 ### Apply signatures to a loaded binary
 
 In IDA, navigate to `File` -> `Load file` -> `FLIRT signature file`. Click the button `Load SIG file` and select the generated .sig file.
+
+## TODO
+
+- Add support for solana versions >= 2.0.0
