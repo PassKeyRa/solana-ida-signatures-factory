@@ -1,6 +1,6 @@
 # Solana IDA Signatures Factory
 
-This repository contains all scripts needed to generate IDA Pro FLIRT signatures for Solana libraries. Use the plugin [solana-ebpf-ida-processor](https://github.com/PassKeyRa/solana-ebpf-ida-processor) to load Solana program binaries and then apply the generated signatures to detect library functions.
+This repository contains all scripts needed to generate IDA Free/Pro FLIRT signatures for Solana libraries. Use the plugin [solana-ebpf-ida-processor](https://github.com/PassKeyRa/solana-ebpf-ida-processor) to load Solana program binaries and then apply the generated signatures to detect library functions.
 
 ## Usage
 
@@ -57,3 +57,43 @@ Example:
 python3 flair-preprocessor.py -if rlibs/anchor-lang/ -of sigs/anchor-lang/
 ```
 
+If `-of` is specified, for every library in the `-if` folder a separate .pat file will be generated in the `-of` folder. However, if the `-o` option is used, only one .pat file will be generated with joined functions from all libraries versions. Note that in this case there is no deduplication of function signatures. Proceed to the next step if you want to deduplicate the signatures.
+
+### Join .pat files and deduplicate signatures
+
+```
+usage: join-pat-files.py [-h] -if INPUT_FOLDER -l LIB_NAME -o OUTPUT_FILE [-dd]
+
+options:
+  -h, --help            show this help message and exit
+  -if INPUT_FOLDER, --input-folder INPUT_FOLDER
+                        Input folder with PAT files (<lib_name>-<version>.pat)
+  -l LIB_NAME, --lib-name LIB_NAME
+                        Library name (joins all versions of *.pat for that library)
+  -o OUTPUT_FILE, --output-file OUTPUT_FILE
+                        Output file
+  -dd, --drop-duplicates
+                        Drop duplicates
+```
+
+Example:
+
+```bash
+python3 join-pat-files.py -if sigs/anchor-lang/ -l anchor_lang -o sigs/anchor-lang.pat -dd
+```
+
+The folder in the `-if` option should contain .pat files with the following naming convention: `<lib_name>-<version>.pat`. The `-l` option is the library name without the version. The `-o` option is the output file name. The optional `-dd` drops duplicates from the final .pat file.
+
+### Generate signatures from .pat files
+
+Use the sigmake tool the FLAIR toolkit (can be downloaded from the official Hex-Rays download center) to generate signatures from .pat files.
+
+Example:
+
+```bash
+sigmake -nAnchorLang sigs/anchor-lang.pat sigs/anchor-lang.sig
+```
+
+### Apply signatures to a loaded binary
+
+In IDA, navigate to `File` -> `Load file` -> `FLIRT signature file`. Click the button `Load SIG file` and select the generated .sig file.
