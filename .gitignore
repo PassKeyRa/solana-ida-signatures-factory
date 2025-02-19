@@ -1,0 +1,8 @@
+crates/*
+solana/*
+rlibs/*
+sigs/*
+__pycache__
+.env
+venv
+*.swp

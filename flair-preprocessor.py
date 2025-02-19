@@ -324,7 +324,6 @@ def extract_relocations_and_functions(elffile):
     return relocations, functions
 
 def parse_function_internals(libdata, relocations, ea, name, size):
-    # TBD
     current_ea = ea
     internal_relocations = []
     while current_ea < ea + size:
