@@ -424,7 +424,7 @@ def process_function(libdata, relocations, fname, fdata):
         # Too short function with many mutations
         return None
     
-    crc = hex(crc16(int(fhex[64:64+alen*2], 16).to_bytes(alen), crc=0xFFFF))[2:].upper().zfill(4)
+    crc = hex(crc16(int(fhex[64:64+alen*2], 16).to_bytes(alen, byteorder='big'), crc=0xFFFF))[2:].upper().zfill(4)
 
     func_len = hex(fdata['func_size'])[2:].upper().zfill(4)
 
